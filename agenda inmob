@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión de Citas</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- FontAwesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- Firebase -->
+  <script type="module">
+    // Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDKimjFKbTYUdvbYSZkEgvlM21U_uiKBU0",
+      authDomain: "agenda-inmobiliaria.firebaseapp.com",
+      projectId: "agenda-inmobiliaria",
+      storageBucket: "agenda-inmobiliaria.appspot.com", // corregido
+      messagingSenderId: "39073104118",
+      appId: "1:39073104118:web:281fd611eba556e442acd7",
+      measurementId: "G-PDQX8Y1723"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Exponer a nivel global para acceder desde botones
+    window.auth = auth;
+    window.db = db;
+    window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+    window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+    window.sendPasswordResetEmail = sendPasswordResetEmail;
+    window.signOut = signOut;
+    window.addDoc = addDoc;
+    window.collection = collection;
+    window.getDocs = getDocs;
+    window.query = query;
+    window.orderBy = orderBy;
+  </script>
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body class="container py-4">
+
+  <!-- 🔐 Login / Registro -->
+  <section id="auth-section">
+    <h2 class="text-center">Iniciar Sesión</h2>
+    <!-- Aquí irán tus formularios de login / registro -->
+  </section>
+
+  <!-- 🏠 Dashboard -->
+  <section id="dashboard-section" class="hidden">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3>Bienvenido, <span id="user-email"></span></h3>
+      <button class="btn btn-danger btn-sm" onclick="signOut(auth)">Cerrar sesión</button>
+    </div>
+    <div class="mb-3">
+      <button class="btn btn-primary" onclick="mostrarFormulario()">Crear Servicio</button>
+      <button class="btn btn-success" onclick="exportarCSV()">Exportar CSV</button>
+    </div>
+    <canvas id="graficoPrioridades" height="100"></canvas>
+  </section>
+
+  <!-- 📝 Formulario de Creación de Cita -->
+  <section id="formulario-section" class="hidden">
+    <h4>Nuevo Servicio</h4>
+    <form id="form-servicio">
+      <input type="text" placeholder="Título" class="form-control mb-2" required />
+      <textarea placeholder="Descripción" class="form-control mb-2" required></textarea>
+      <select class="form-control mb-2" required>
+        <option value="">Prioridad</option>
+        <option value="alta">Alta</option>
+        <option value="media">Media</option>
+        <option value="baja">Baja</option>
+      </select>
+      <input type="text" placeholder="Tipo de servicio" class="form-control mb-2" required />
+      <input type="text" placeholder="Ubicación" class="form-control mb-2" required />
+      <button class="btn btn-primary" type="submit">Guardar Servicio</button>
+    </form>
+  </section>
+
+  <!-- 📋 Lista de Servicios -->
+  <section id="lista-servicios" class="mt-4 hidden">
+    <h4>Servicios Registrados</h4>
+    <div id="contenedor-servicios" class="row"></div>
+  </section>
+
+  <!-- 📊 Estadísticas -->
+  <section id="estadisticas-section" class="mt-4 hidden">
+    <h4>Estadísticas</h4>
+    <canvas id="graficoEstadisticas" height="100"></canvas>
+  </section>
+
+  <script>
+    // Aquí irán tus funciones JS para manejar la lógica de login, creación, exportación, etc.
+    function mostrarFormulario() {
+      document.getElementById('formulario-section').classList.remove('hidden');
+    }
+
+    function exportarCSV() {
+      Swal.fire('CSV exportado (ejemplo)');
+    }
+  </script>
+</body>
+</html>
